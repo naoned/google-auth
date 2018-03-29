@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Naoned\GoogleAuth\Infrastructure\Services;
+namespace Naoned\GoogleAuth\Infrastructure\Services\GoogleAuth;
 
 use Onyx\Traits\UrlGeneratorAware;
 use Onyx\Traits\RequestAware;
