@@ -27,10 +27,10 @@ composer require naoned/google-auth
 Add GoogleAuth to your container:
 ```php
 use Pimple\Container;
-use Naoned\GoogleAuth\Infrastructure\Services\GoogleAuth;
+use Naoned\GoogleAuth\Infrastructure\Services\GoogleAuth\Api;
 
 $container['google.auth'] = function(Container $c) {
-    return new GoogleAuth('path/to/your/config.json', $c['request_stack'], $c['url_generator']);
+    return new Api('path/to/your/config.json', $c['request_stack'], $c['url_generator']);
 };
 ```
 
