@@ -13,7 +13,7 @@ PHP library to use Google SSO Authentication in Onyx project.
 * In the new project, go to "library", search for Google+ API and activate it
 * In Google+ API, click on "create new identifiers"
 * Fill the input "redirection URI"
-* Download the json identifiers file
+* Download the json config file
 * Put the file in your project
 
 
@@ -30,7 +30,7 @@ use Pimple\Container;
 use Naoned\GoogleAuth\Infrastructure\Services\GoogleAuth;
 
 $container['google.auth'] = function(Container $c) {
-    return new GoogleAuth('path/to/your/identifiers-file.json', $c['request_stack'], $c['url_generator']);
+    return new GoogleAuth('path/to/your/config.json', $c['request_stack'], $c['url_generator']);
 };
 ```
 
@@ -54,41 +54,41 @@ class Controller
         $this->auth = $auth;
     }
 
-    //Go to google account choice and connection
+    // Go to google account choice and connection
     public function loginProcessAction(): Response
     {
         return new RedirectResponse($this->auth->loginUrl());
     }
     
-    //Callback call by google once the user is connected
-    //this callback url is defined in the generated config.json token
+    // Callback call by google once the user is connected
+    // this callback url is defined in the generated config.json token
     public function callbackAction(): Response
     {
         try
         {
-            //log the user with google api
+            // log the user with google api
             $mail = $this->auth->loginProcess();
         }
         catch (GoogleError $e)
         {
-            //error throw by google api
+            // error throw by google api
             throw new \HttpException(500, $e->getMessage());
         }
         catch (BadRequest $e)
         {
-            //error throw if the request hasn't the right parameters
+            // error throw if the request hasn't the right parameters
             throw new \HttpException(400, $e->getMessage());
         }
 
-        //Connexion succesfull with mail "$mail";
+        // Connexion succesfull with mail "$mail";
 
-        //go where you want once connected
+        // Go where you want once connected
         return $this->redirect('homepage');
     }
 
     public function logoutAction(): Response
     {
-        //redirect to google logout and go to the specified route (ex: login.unconnected)
+        // redirect to google logout and go to the specified route (ex: login.unconnected)
         return new RedirectResponse($this->auth->logoutUrl('login.unconnected', ['params' => 'my value']));
     }
 }
