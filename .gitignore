@@ -1,0 +1,46 @@
+#================================================
+# Dependencies
+#================================================
+vendor/
+node_modules/
+
+#================================================
+# Application runtime files
+#================================================
+var/
+
+#================================================
+Development
+#================================================
+npm-debug.log
+/system/bash-history/*
+.env
+
+#================================================
+Generated files
+#================================================
+karma
+config/built-in/*.yml
+config/local/*.yml
+
+whalephant
+docker/images/phpunit/Dockerfile
+docker/images/phpunit/php.ini
+docker/images/console/Dockerfile
+docker/images/console/php.ini
+
+www/assets/*
+assets/css/*
+
+#================================================
+# QA reports
+#================================================
+reports/
+coverage/
+
+#================================================
+# Eclipse files
+#================================================
+.buildpath
+.project
+.settings/

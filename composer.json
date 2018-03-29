@@ -1,0 +1,19 @@
+{
+    "name": "naoned/googleAuth",
+    "type": "project",
+    "require-dev" : {
+        "phpunit/phpunit" : "~6.0",
+        "puzzle/assert": "~1.0"
+    },
+    "require": {
+        "php": ">=7.1.0",
+        "onyx/core": "~0.13",
+        "google/apiclient": "^2.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Onyx\\": "lib/",
+            "Naoned\\GoogleAuth\\": "src/"
+        }
+    }
+}
