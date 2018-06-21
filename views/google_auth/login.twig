@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% block stylesheet %}
+        {% for asset in ['vendor.scss', 'main.scss', 'css.css'] %}
+            <link rel="stylesheet" type="text/css" href="{{ webpackAsset(asset) }}">
+        {% endfor %}
+    {% endblock %}
+    <title>Naoned</title>
+    <style>
+    html,
+body {
+  height: 100%;
+}
+
+body {
+  display: -ms-flexbox;
+  display: -webkit-box;
+  display: flex;
+  -ms-flex-align: center;
+  -ms-flex-pack: center;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f5f5f5;
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+    </style>
+  </head>
+
+  <body>
+  <div class="container">
+      <div class="row">
+      {% include 'google_auth/alerts.twig' %}
+      </div>
+      <div class="row ">
+          <div class="col-12 text-center">
+              <h1>App name</h1>
+          </div>
+      </div>
+      <br>
+      <hr>
+      <div class="row">
+          <form class="form-signin text-center">
+              <a class="btn btn-lg btn-info btn-block" href="{{ path('google_auth.process') }}">Connexion</a>
+          </form>
+      </div>
+  </div>
+
+  {% block javascript %}
+      {% for asset in ['common.js', 'vendor.main.js', 'main.js'] %}
+          <script src="{{ webpackAsset(asset) }}"></script>
+      {% endfor %}
+  {% endblock %}
+
+  </body>
+</html>

@@ -2,17 +2,19 @@
 
 declare(strict_types = 1);
 
-namespace Naoned\GoogleAuth\Infrastructure\Services\GoogleAuth;
+namespace Naoned\GoogleAuth\Infrastructure\Clients;
 
 use Onyx\Traits\UrlGeneratorAware;
 use Onyx\Traits\RequestAware;
-use Naoned\GoogleAuth\Exceptions\GoogleError;
-use Naoned\GoogleAuth\Exceptions\BadRequest;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Naoned\GoogleAuth\Infrastructure\Services\GoogleAuth;
+use Naoned\GoogleAuth\Infrastructure\Client;
+use Naoned\GoogleAuth\Domain\Entities\GoogleUser;
+use Puzzle\Configuration;
+use Naoned\GoogleAuth\Domain\Exceptions\BadRequest;
+use Naoned\GoogleAuth\Domain\Exceptions\GoogleError;
 
-class Api implements GoogleAuth
+class Api implements Client
 {
     use
         RequestAware,
@@ -27,14 +29,13 @@ class Api implements GoogleAuth
     private const
         GOOGLE_LOGOUT_URL = 'https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=';
 
-    public function __construct(string $clientConfig, RequestStack $request, UrlGeneratorInterface $urlGenerator)
+    public function __construct(Configuration $config, RequestStack $request, UrlGeneratorInterface $urlGenerator)
     {
-        $this->client = $this->createClient($clientConfig);
+        $this->client = $this->createClient($config);
         $this->plus = new \Google_Service_Plus($this->client);
         $this->setRequest($request);
         $this->setUrlGenerator($urlGenerator);
     }
-
 
     public function loginUrl(): string
     {
@@ -46,11 +47,11 @@ class Api implements GoogleAuth
         return self::GOOGLE_LOGOUT_URL . $this->url($route, $parameters);
     }
 
-    public function loginProcess(): string
+    public function loginProcess(): GoogleUser
     {
         if (!$this->request->query->has('code'))
         {
-            throw new BadRequest('Code parameter must be provided.');
+            throw new BadRequest('Code parameter must be provided');
         }
 
         $code = $this->request->query->get('code');
@@ -61,21 +62,33 @@ class Api implements GoogleAuth
             throw new GoogleError($result['error_description']);
         }
 
-        return $this->plus->people->get("me")['emails'][0]['value'];
+        $user = $this->plus->people->get("me");
+
+        return new GoogleUser(
+            $user['emails'][0]->getValue(),
+            $user['name']->getGivenName(),
+            $user['image']->getUrl()
+        );
     }
 
-    private function createClient(string $configFilePath): \Google_Client
+    private function createClient(Configuration $config): \Google_Client
     {
-        if (!is_file($configFilePath))
-        {
-            throw new \Exception(sprintf('File %s does not exist.', $configFilePath));
-        }
-
         $client = new \Google_Client();
-        $client->setAuthConfig($configFilePath);
+        $client->setAuthConfig($config->readRequired('web'));
         $client->addScope(\Google_Service_Plus::USERINFO_EMAIL);
         $client->setAccessType('offline');
 
         return $client;
+    }
+
+    private function computeConfiguration(array $readConfiguration): array
+    {
+        $defaultConfiguration = [
+            'auth_uri' => "https://accounts.google.com/o/oauth2/auth",
+            'token_uri' => "https://accounts.google.com/o/oauth2/token",
+            'auth_provider_x509_cert_url' => "https://www.googleapis.com/oauth2/v1/certs",
+        ];
+
+        return $readConfiguration + $defaultConfiguration;
     }
 }

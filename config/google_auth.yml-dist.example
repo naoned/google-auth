@@ -1,0 +1,10 @@
+redirect_all: true
+web:
+    client_id: <%google_auth.client_id%>
+    client_secret: <%google_auth.client_secret%>
+    project_id: <%google_auth.project_id%>
+    auth_uri: <%google_auth.auth_uri%>
+    token_uri: <%google_auth.token_uri%>
+    auth_provider_x509_cert_url: <%google_auth.cert_url%>
+    redirect_uris:
+       - <%google_auth.redirect_uri%>

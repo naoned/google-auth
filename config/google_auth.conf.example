@@ -1,0 +1,26 @@
+[Variables]
+
+google_auth.client_id:
+    dev =
+
+google_auth.client_secret:
+    dev =
+
+google_auth.project_id:
+    default =
+
+google_auth.auth_uri:
+    default = https://accounts.google.com/o/oauth2/auth
+
+google_auth.token_uri:
+    default = https://accounts.google.com/o/oauth2/token
+
+google_auth.cert_url:
+    default = https://www.googleapis.com/oauth2/v1/certs
+
+google_auth.redirect_uri:
+    dev = <your_domain_name>/google_oauth/callback
+
+google_auth.redirect_route:
+    dev = home
+    default = home
