@@ -43,3 +43,5 @@ If you want to require the connection to access your application, add this line 
 ```php
 GoogleAuthServiceProvider::registerErrorHandler($this);
 ```
+
+Overcharge login template by creating `views/google_auth/login.twig` (to make a branded login page)
