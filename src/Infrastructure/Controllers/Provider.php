@@ -5,6 +5,8 @@ declare(strict_types = 1);
 namespace Naoned\GoogleAuth\Infrastructure\Controllers;
 
 use Silex\Application;
+use Puzzle\PrefixedConfiguration;
+
 use Silex\Api\ControllerProviderInterface;
 
 class Provider implements ControllerProviderInterface
@@ -12,7 +14,7 @@ class Provider implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $app['controller.google_auth'] = function() use($app) {
-            $controller = new Controller($app['session'], $app['google_auth.client'], $app['configuration']->readRequired('google_auth/controller/redirect_route_after_successfull_login'));
+            $controller = new Controller($app['session'], $app['google_auth.client'], new PrefixedConfiguration($app['configuration'], 'google_auth'));
             $controller
                 ->setRequest($app['request_stack'])
                 ->setTwig($app['twig'])

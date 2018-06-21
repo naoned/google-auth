@@ -5,6 +5,8 @@ declare(strict_types = 1);
 namespace Naoned\GoogleAuth\Infrastructure\Controllers;
 
 use Onyx\Traits;
+use Puzzle\Configuration;
+
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\NullLogger;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,14 +29,14 @@ class Controller
     private
         $client,
         $session,
-        $redirectRoute;
+        $configuration;
 
-    public function __construct(SessionInterface $session, Client $client, string $redirectRoute)
+    public function __construct(SessionInterface $session, Client $client, Configuration $configuration)
     {
         $this->logger = new NullLogger();
         $this->session = $session;
         $this->client = $client;
-        $this->redirectRoute = $redirectRoute;
+        $this->configuration = $configuration;
     }
 
     public function displayLoginFormAction(): Response
@@ -62,18 +64,44 @@ class Controller
             throw new HttpException(Response::BAD_REQUEST, $e->getMessage());
         }
 
-        // Connexion successfull with mail "$mail";
-        // Domain name / mail restrictions
-        /*
-         if (!preg_match('/@naoned.fr$/', $mail))
+        $mail = $user->mail();
+        if (! $this->matchAuthorizedMails($mail))
         {
             return new RedirectResponse($this->auth->logoutUrl('login.unauthorized'));
         }
-         */
 
         $this->session->set('user', $user);
 
-        return $this->redirect($this->redirectRoute);
+        return $this->redirect($this->configuration->readRequired('controller/redirect_route_after_successfull_login'));
+    }
+
+    private function matchAuthorizedMail(string $mail): bool
+    {
+        $domains = $this->configuration->read('restrictions/domains', []);
+        $mails = $this->configuration->read('restrictions/mails', []);
+
+        if (empty($domains) && empty($mails))
+        {
+            return true;
+        }
+
+        foreach ($mails as $restritiveMail)
+        {
+            if ($mail === $restritiveMail)
+            {
+                return true;
+            }
+        }
+
+        foreach ($domains as $domain)
+        {
+            if (preg_match('/@' . $domain . '$/', $mail))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function logoutAction(): Response
