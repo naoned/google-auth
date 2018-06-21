@@ -75,7 +75,7 @@ class Controller
         return $this->redirect($this->configuration->readRequired('controller/redirect_route_after_successfull_login'));
     }
 
-    private function matchAuthorizedMail(string $mail): bool
+    private function matchAuthorizedMails(string $mail): bool
     {
         $domains = $this->configuration->read('restrictions/domains', []);
         $mails = $this->configuration->read('restrictions/mails', []);
