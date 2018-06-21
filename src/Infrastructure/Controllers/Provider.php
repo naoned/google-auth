@@ -14,7 +14,7 @@ class Provider implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $app['controller.google_auth'] = function() use($app) {
-            $controller = new Controller($app['session'], $app['google_auth.client'], new PrefixedConfiguration($app['configuration'], 'google_auth'));
+            $controller = new Controller($app['session'], $app['google_auth.client'], new PrefixedConfiguration($app['configuration'], 'google_auth/controller'));
             $controller
                 ->setRequest($app['request_stack'])
                 ->setTwig($app['twig'])
@@ -45,6 +45,11 @@ class Provider implements ControllerProviderInterface
             ->match('/callback', 'controller.google_auth:loginCallbackAction')
             ->method('GET')
             ->bind(GoogleAuthRoutes::LOGIN_CALLBACK);
+
+        $controllers
+            ->match('/unauthorized', 'controller.google_auth:logoutUnauthorizedLogin')
+            ->method('GET')
+            ->bind(GoogleAuthRoutes::UNAUTHORIZED_LOGIN);
 
         return $controllers;
     }

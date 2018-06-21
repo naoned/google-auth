@@ -67,12 +67,12 @@ class Controller
         $mail = $user->mail();
         if (! $this->matchAuthorizedMails($mail))
         {
-            return new RedirectResponse($this->auth->logoutUrl('login.unauthorized'));
+            return new RedirectResponse($this->client->logoutUrl(GoogleAuthRoutes::UNAUTHORIZED_LOGIN));
         }
 
         $this->session->set('user', $user);
 
-        return $this->redirect($this->configuration->readRequired('controller/redirect_route_after_successfull_login'));
+        return $this->redirect($this->configuration->readRequired('redirect_route_after_successfull_login'));
     }
 
     private function matchAuthorizedMails(string $mail): bool
@@ -85,9 +85,9 @@ class Controller
             return true;
         }
 
-        foreach ($mails as $restritiveMail)
+        foreach ($mails as $restrictiveMail)
         {
-            if ($mail === $restritiveMail)
+            if ($mail === $restrictiveMail)
             {
                 return true;
             }
@@ -109,5 +109,12 @@ class Controller
         $this->session->remove('user');
 
         return new RedirectResponse($this->client->logoutUrl(GoogleAuthRoutes::DISPLAY_LOGIN_FORM));
+    }
+
+    public function logoutUnauthorizedLogin(): Response
+    {
+        $this->addErrorFlash('Vous n\'êtes pas autorisé à vous connecter.');
+
+        return new RedirectResponse($this->client->loginUrl());
     }
 }
