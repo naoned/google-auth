@@ -21,75 +21,25 @@ PHP library to use Google SSO Authentication in Onyx project.
 
 Download deps in your project via composer:
 ```bash
-composer require naoned/google-auth
+composer update naoned/google-auth
 ```
 
-Add GoogleAuth to your container:
-```php
-use Pimple\Container;
-use Naoned\GoogleAuth\Infrastructure\Services\GoogleAuth\Api;
-
-$container['google.auth'] = function(Container $c) {
-    return new Api('path/to/your/config.json', $c['request_stack'], $c['url_generator']);
-};
+Copy configuration file to your configuration directory
+```bash
+cp vendor/naoned/google-auth/config/google_auth.yml-dist.example config/built-in/google_auth.yml-dist
+cp vendor/naoned/google-auth/config/google_auth.conf.example env/google_auth.conf
 ```
 
-### Usage
+Then replace variables in `env/google_auth.conf` with yours, and hydrate with `karma`.
+
+Enable GoogleAuth plugin (`config/built-in/plugins.yml`):
+```yml
+enabled:
+  - Naoned\GoogleAuth\Plugin
+```
+### Possibilities
+
+If you want to require the connection to access your application, add this line to your application global provider:
 ```php
-
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-
-use Naoned\GoogleAuth\Infrastructure\Services\GoogleAuth;
-use Naoned\GoogleAuth\Exceptions\GoogleError;
-use Naoned\GoogleAuth\Exceptions\BadRequest;
-
-class Controller
-{   
-    private
-        $auth;
-
-    public function __construct(GoogleAuth $auth)
-    {
-        $this->auth = $auth;
-    }
-
-    // Go to google account choice and connection
-    public function loginProcessAction(): Response
-    {
-        return new RedirectResponse($this->auth->loginUrl());
-    }
-    
-    // Callback call by google once the user is connected
-    // this callback url is defined in the generated config.json token
-    public function callbackAction(): Response
-    {
-        try
-        {
-            // log the user with google api
-            $mail = $this->auth->loginProcess();
-        }
-        catch (GoogleError $e)
-        {
-            // error throw by google api
-            throw new \HttpException(500, $e->getMessage());
-        }
-        catch (BadRequest $e)
-        {
-            // error throw if the request hasn't the right parameters
-            throw new \HttpException(400, $e->getMessage());
-        }
-
-        // Connexion succesfull with mail "$mail";
-
-        // Go where you want once connected
-        return $this->redirect('homepage');
-    }
-
-    public function logoutAction(): Response
-    {
-        // redirect to google logout and go to the specified route (ex: login.unconnected)
-        return new RedirectResponse($this->auth->logoutUrl('login.unconnected', ['params' => 'my value']));
-    }
-}
+GoogleAuthServiceProvider::registerErrorHandler($this);
 ```
