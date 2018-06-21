@@ -21,6 +21,6 @@ google_auth.cert_url:
 google_auth.redirect_uri:
     dev = <your_domain_name>/google_oauth/callback
 
-google_auth.redirect_route:
+google_auth.redirect_route_after_successfull_login:
     dev = home
     default = home

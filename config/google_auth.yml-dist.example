@@ -6,6 +6,8 @@ web:
     auth_uri: <%google_auth.auth_uri%>
     token_uri: <%google_auth.token_uri%>
     auth_provider_x509_cert_url: <%google_auth.cert_url%>
-    redirect_route: <%google_auth.redirect_route%>
     redirect_uris:
        - <%google_auth.redirect_uri%>
+
+controller:
+       redirect_route_after_successfull_login: <%google_auth.redirect_route_after_successfull_login%>

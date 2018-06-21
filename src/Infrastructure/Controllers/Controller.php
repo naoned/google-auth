@@ -26,13 +26,15 @@ class Controller
 
     private
         $client,
-        $session;
+        $session,
+        $redirectRoute;
 
-    public function __construct(SessionInterface $session, Client $client)
+    public function __construct(SessionInterface $session, Client $client, string $redirectRoute)
     {
         $this->logger = new NullLogger();
         $this->session = $session;
         $this->client = $client;
+        $this->redirectRoute = $redirectRoute;
     }
 
     public function displayLoginFormAction(): Response
@@ -71,7 +73,7 @@ class Controller
 
         $this->session->set('user', $user);
 
-        return $this->redirect('home'); //TODO FIXME: changer pour variable de conf 'google_auth.redirect_route'
+        return $this->redirect($this->redirectRoute);
     }
 
     public function logoutAction(): Response

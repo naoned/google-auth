@@ -12,7 +12,7 @@ class Provider implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $app['controller.google_auth'] = function() use($app) {
-            $controller = new Controller($app['session'], $app['google_auth.client']);
+            $controller = new Controller($app['session'], $app['google_auth.client'], $app['configuration']->readRequired('controller/redirect_route_after_successfull_login'));
             $controller
                 ->setRequest($app['request_stack'])
                 ->setTwig($app['twig'])
