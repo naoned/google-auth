@@ -115,6 +115,6 @@ class Controller
     {
         $this->addErrorFlash('Vous n\'êtes pas autorisé à vous connecter.');
 
-        return new RedirectResponse($this->client->loginUrl());
+        return $this->logoutAction();
     }
 }
