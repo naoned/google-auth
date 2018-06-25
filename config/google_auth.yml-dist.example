@@ -10,7 +10,7 @@ web:
        - <%google_auth.redirect_uri%>
 
 controller:
-    redirect_route_after_successfull_login: <%google_auth.redirect_route_after_successfull_login%>
+    redirect_route_after_successful_login: <%google_auth.redirect_route_after_successful_login%>
     restrictions:
         domains:
             - <%google_auth.restrictions.domains%>

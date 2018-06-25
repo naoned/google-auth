@@ -72,7 +72,7 @@ class Controller
 
         $this->session->set('user', $user);
 
-        return $this->redirect($this->configuration->readRequired('redirect_route_after_successfull_login'));
+        return $this->redirect($this->configuration->readRequired('redirect_route_after_successful_login'));
     }
 
     private function matchAuthorizedMails(string $mail): bool

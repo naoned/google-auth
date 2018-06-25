@@ -21,14 +21,11 @@ google_auth.cert_url:
 google_auth.redirect_uri:
     dev = <your_domain_name>/google_oauth/callback
 
-google_auth.redirect_route_after_successfull_login:
-    dev = home
-    default = home
+google_auth.redirect_route_after_successful_login:
+    default = __FIXME__
 
 google_auth.restrictions.domains:
-    dev = <your_domain_name>
-    default = <your_domain_name>
+    default = __FIXME__
 
 google_auth.restrictions.mails:
-    dev =
-    default =
+    default = __FIXME__
