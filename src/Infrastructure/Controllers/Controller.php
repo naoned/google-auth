@@ -6,7 +6,6 @@ namespace Naoned\GoogleAuth\Infrastructure\Controllers;
 
 use Onyx\Traits;
 use Puzzle\Configuration;
-
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\NullLogger;
 use Symfony\Component\HttpFoundation\Response;

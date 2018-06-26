@@ -28,7 +28,7 @@ class GoogleAuthServiceProvider implements ServiceProviderInterface, EventListen
             return new Api($c['google_auth.configuration'], $c['request_stack'], $c['url_generator']);
         };
 
-        $container['google_auth.listeners.alwaysRedirectToLogin'] = function($c) {
+        $container['google_auth.listeners.alwaysRedirectToLogin'] = function(Container $c) {
             return new AlwaysRedirectToLogin();
         };
     }

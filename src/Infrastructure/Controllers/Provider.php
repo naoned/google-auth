@@ -6,7 +6,6 @@ namespace Naoned\GoogleAuth\Infrastructure\Controllers;
 
 use Silex\Application;
 use Puzzle\PrefixedConfiguration;
-
 use Silex\Api\ControllerProviderInterface;
 
 class Provider implements ControllerProviderInterface
