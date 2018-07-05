@@ -15,6 +15,7 @@ use Puzzle\PrefixedConfiguration;
 use Naoned\GoogleAuth\Infrastructure\Clients\Api;
 use Naoned\GoogleAuth\Infrastructure\Listeners\AlwaysRedirectToLogin;
 use Naoned\GoogleAuth\Infrastructure\Controllers\GoogleAuthRoutes;
+use Naoned\GoogleAuth\Domain\Services\WhitelistCheckers\PuzzleConfiguration;
 
 class GoogleAuthServiceProvider implements ServiceProviderInterface, EventListenerProviderInterface
 {
@@ -30,6 +31,12 @@ class GoogleAuthServiceProvider implements ServiceProviderInterface, EventListen
 
         $container['google_auth.listeners.alwaysRedirectToLogin'] = function(Container $c) {
             return new AlwaysRedirectToLogin();
+        };
+
+        $container['google_auth.whitelistChecker'] = function(Container $c) {
+            return new PuzzleConfiguration(
+                new PrefixedConfiguration($c['configuration'], 'google_auth/controller')
+            );
         };
     }
 
