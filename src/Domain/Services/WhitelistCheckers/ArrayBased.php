@@ -5,29 +5,27 @@ declare(strict_types = 1);
 namespace Naoned\GoogleAuth\Domain\Services\WhitelistCheckers;
 
 use Naoned\GoogleAuth\Domain\WhitelistChecker;
-use Puzzle\Configuration;
 
-class PuzzleConfiguration implements WhitelistChecker
+class ArrayBased implements WhitelistChecker
 {
     private
-        $configuration;
+        $domains,
+        $mails;
 
-    public function __construct(Configuration $configuration)
+    public function __construct(array $allowedDomains, array $allowedMails)
     {
-        $this->configuration = $configuration;
+        $this->domains = $allowedDomains;
+        $this->mails = $allowedMails;
     }
 
     public function allow(string $mail): bool
     {
-        $domains = $this->configuration->read('restrictions/domains', []);
-        $mails = $this->configuration->read('restrictions/mails', []);
-
-        if(empty($domains) && empty($mails))
+        if(empty($this->domains) && empty($this->mails))
         {
             return true;
         }
 
-        foreach($mails as $restrictiveMail)
+        foreach($this->mails as $restrictiveMail)
         {
             if($mail === $restrictiveMail)
             {
@@ -35,7 +33,7 @@ class PuzzleConfiguration implements WhitelistChecker
             }
         }
 
-        foreach($domains as $domain)
+        foreach($this->domains as $domain)
         {
             if(preg_match('/@' . $domain . '$/', $mail))
             {
