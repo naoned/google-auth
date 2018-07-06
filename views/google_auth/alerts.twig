@@ -1,0 +1,22 @@
+{% set cssClasses = {
+    'info': 'info',
+    'success': 'success',
+    'warning': 'warning',
+    'error': 'danger',
+} %}
+
+{% if app.session.flashBag.peekAll|length > 0 %}
+<aside class="container">
+    {% for type, messages in app.session.flashBag.all %}
+        {% set cssClass = cssClasses[type]|default('info') %}
+        {% for message in messages %}
+            <div class="alert alert-{{ cssClass }} col-md-12" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <p>{{ message }}<p>
+            </div>
+        {% endfor %}
+    {% endfor %}
+</aside>
+{% endif %}
