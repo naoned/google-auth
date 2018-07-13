@@ -80,7 +80,7 @@ class Controller
     {
         $this->session->remove('user');
 
-        return new RedirectResponse($this->client->logoutUrl(GoogleAuthRoutes::DISPLAY_LOGIN_FORM));
+        return $this->redirect($this->redirectRoute);
     }
 
     public function logoutUnauthorizedLogin(): Response
