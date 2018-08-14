@@ -10,19 +10,46 @@ use Symfony\Component\HttpFoundation\Response;
 use Naoned\GoogleAuth\Infrastructure\Controllers\GoogleAuthRoutes;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Puzzle\Configuration;
 
 class AlwaysRedirectToLogin implements EventSubscriberInterface
 {
+    private
+        $configuration;
+
+    public function __construct(Configuration $configuration)
+    {
+        $this->configuration = $configuration;
+    }
+
     public function onKernelRequest(GetResponseEvent $event): void
     {
         $request = $event->getRequest();
-        $route = $request->attributes->get('_route');
-        $regexp = sprintf('/^%s($|.)/', GoogleAuthRoutes::ROUTE_PREFIX);
 
-        if(! preg_match($regexp, $route) && ! $request->getSession()->has('user'))
+        if($request->getSession()->has('user'))
         {
-            throw new HttpException(Response::HTTP_UNAUTHORIZED);
+            return;
         }
+
+        $route = $request->attributes->get('_route');
+        $regexps = [
+            sprintf('^%s($|\.)', GoogleAuthRoutes::ROUTE_PREFIX),
+        ];
+
+        $regexps = array_merge(
+            $regexps,
+            $this->configuration->read('controller/passthru_routes', [])
+        );
+
+        foreach($regexps as $regexp)
+        {
+            if(preg_match("~$regexp~", $route))
+            {
+                return;
+            }
+        }
+
+        throw new HttpException(Response::HTTP_UNAUTHORIZED);
     }
 
     public static function getSubscribedEvents()

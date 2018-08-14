@@ -16,3 +16,4 @@ controller:
             - <%google_auth.restrictions.domains%>
         mails:
             - <%google_auth.restrictions.mails%>
+    # passthru_routes: ^home\.

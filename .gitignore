@@ -39,8 +39,9 @@ reports/
 coverage/
 
 #================================================
-# Eclipse files
+# IDE files
 #================================================
 .buildpath
 .project
 .settings/
+.idea/
