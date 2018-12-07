@@ -67,8 +67,14 @@ class Api implements Client
         return new GoogleUser(
             $user['emails'][0]->getValue(),
             $user['name']->getGivenName(),
-            $user['image']->getUrl()
+            $user['image']->getUrl(),
+            $this->client->getAccessToken()
         );
+    }
+
+    public function client(): \Google_Client
+    {
+        return $this->client;
     }
 
     private function createClient(Configuration $config): \Google_Client

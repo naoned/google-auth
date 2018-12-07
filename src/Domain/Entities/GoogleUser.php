@@ -9,13 +9,15 @@ class GoogleUser
     private
         $mail,
         $name,
-        $avatar;
+        $avatar,
+        $accessToken;
 
-    public function __construct(string $mail, ?string $name, string $avatar)
+    public function __construct(string $mail, ?string $name, string $avatar, array $accessToken)
     {
         $this->mail = $mail;
         $this->name = empty($name) ? null : $name;
         $this->avatar = $avatar;
+        $this->accessToken = $accessToken;
     }
 
     public function mail(): string
@@ -34,5 +36,10 @@ class GoogleUser
     public function avatar(): string
     {
         return $this->avatar;
+    }
+
+    public function accessToken(): array
+    {
+        return $this->accessToken ?? $this->accessToken;
     }
 }
