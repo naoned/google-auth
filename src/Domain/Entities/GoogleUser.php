@@ -40,6 +40,6 @@ class GoogleUser
 
     public function accessToken(): array
     {
-        return $this->accessToken ?? $this->accessToken;
+        return $this->accessToken;
     }
 }
