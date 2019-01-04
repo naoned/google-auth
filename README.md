@@ -44,7 +44,7 @@ If you want to require the connection to access your application, add this line 
 GoogleAuthServiceProvider::registerErrorHandler($this);
 ```
 
-If you want to load Api with additionnal scopes (for example to authoize drive access), add this to your provider:
+If you want to load Api with additionnal scopes (for example to authorize drive access), add this to your provider:
 ```php
 $container['google_auth.additionnalScopes'] = function(Container $c) {
    return [\Google_Service_Drive::DRIVE]; // you can replace or add other scopes
