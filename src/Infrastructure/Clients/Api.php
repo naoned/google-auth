@@ -21,7 +21,7 @@ class Api implements Client
         UrlGeneratorAware;
 
     private
-        $plus,
+        $oauthService,
         $request,
         $googleLogoutUrl,
         $client;
@@ -32,13 +32,12 @@ class Api implements Client
     public function __construct(Configuration $config, RequestStack $request, UrlGeneratorInterface $urlGenerator, array $additionnalScopes)
     {
         $this->client = $this->createClient($config);
-
         foreach ($additionnalScopes as $scope)
         {
             $this->client->addScope($scope);
         }
 
-        $this->plus = new \Google_Service_Plus($this->client);
+        $this->oauthService = new \Google_Service_Oauth2($this->client);
         $this->setRequest($request);
         $this->setUrlGenerator($urlGenerator);
     }
@@ -68,12 +67,12 @@ class Api implements Client
             throw new GoogleError($result['error_description']);
         }
 
-        $user = $this->plus->people->get("me");
+        $user = $this->oauthService->userinfo_v2_me->get();
 
         return new GoogleUser(
-            $user['emails'][0]->getValue(),
-            $user['name']->getGivenName(),
-            $user['image']->getUrl(),
+            $user->getEmail(),
+            $user->getName(),
+            $user->getPicture(),
             $this->client->getAccessToken()
         );
     }
