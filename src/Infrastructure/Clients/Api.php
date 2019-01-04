@@ -29,9 +29,14 @@ class Api implements Client
     private const
         GOOGLE_LOGOUT_URL = 'https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=';
 
-    public function __construct(Configuration $config, RequestStack $request, UrlGeneratorInterface $urlGenerator)
+    public function __construct(Configuration $config, RequestStack $request, UrlGeneratorInterface $urlGenerator, array $additionnalScopes)
     {
         $this->client = $this->createClient($config);
+        foreach ($additionnalScopes as $scope)
+        {
+            $this->client->addScope($scope);
+        }
+
         $this->oauthService = new \Google_Service_Oauth2($this->client);
         $this->setRequest($request);
         $this->setUrlGenerator($urlGenerator);
@@ -67,8 +72,14 @@ class Api implements Client
         return new GoogleUser(
             $user->getEmail(),
             $user->getName(),
-            $user->getPicture()
+            $user->getPicture(),
+            $this->client->getAccessToken()
         );
+    }
+
+    public function client(): \Google_Client
+    {
+        return $this->client;
     }
 
     private function createClient(Configuration $config): \Google_Client

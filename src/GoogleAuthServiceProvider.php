@@ -21,12 +21,19 @@ class GoogleAuthServiceProvider implements ServiceProviderInterface, EventListen
 {
     public function register(Container $container)
     {
+        if (!isset($container['google_auth.additionnalScopes']))
+        {
+            $container['google_auth.additionnalScopes'] = function(Container $c) {
+                return [];
+            };
+        }
+
         $container['google_auth.configuration'] = function(Container $c) {
             return new PrefixedConfiguration($c['configuration'], 'google_auth');
         };
 
         $container['google_auth.client'] = function(Container $c) {
-            return new Api($c['google_auth.configuration'], $c['request_stack'], $c['url_generator']);
+            return new Api($c['google_auth.configuration'], $c['request_stack'], $c['url_generator'], $c['google_auth.additionnalScopes']);
         };
 
         $container['google_auth.listeners.alwaysRedirectToLogin'] = function(Container $c) {
