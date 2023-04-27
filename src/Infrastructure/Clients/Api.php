@@ -86,7 +86,7 @@ class Api implements Client
     {
         $client = new \Google_Client();
         $client->setAuthConfig($config->readRequired('web'));
-        $client->addScope(\Google_Service_Plus::USERINFO_EMAIL);
+        $client->addScope("email");
         $client->setAccessType('offline');
 
         return $client;
